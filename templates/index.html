@@ -69,9 +69,11 @@
                 <tbody id="calendarBody"></tbody>
             </table>
 
+            {% if username == 'emily' %}
             <div class="calendar-footer">
-                <button onclick="resetNotes()">重置所有備註</button>
+                <button onclick="resetAll()">⚠️ 重置所有資料</button>
             </div>
+            {% endif %}
         </div>
     </div>
 
