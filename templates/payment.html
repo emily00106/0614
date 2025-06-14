@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <h2>付款頁面</h2>
+
+    <p>現在時間: <span id="current-time"></span></p>
+    
+    <div id="payment-form">
+        <label for="amount">金額:</label>
+        <input type="number" id="amount" placeholder="不能為0" required>
+
+        <p>付款地點: 702第三排我的位置</p>
+
+        <button id="payment-button">我會記得付款</button>
+    </div>
+
+    <!-- 背景遮罩 -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+
+    <!-- 註冊成功的懸浮視窗 -->
+    <div class="modal" id="success-modal">
+        <h3>註冊成功</h3>
+        <p>感謝您的付款呦呼呼。</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
