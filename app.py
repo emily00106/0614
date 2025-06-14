@@ -1,19 +1,52 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, Note
 import os
 
+# 初始化 Flask 應用和資料庫
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'
 
-# Database setup
+# 資料庫設定
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'calendar.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app)
+# 初始化資料庫
+db = SQLAlchemy(app)
 
-# Routes
+# 用戶和備註模型
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    notes = db.relationship('Note', backref='user', lazy=True)
+
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.String(50), nullable=False)
+    text = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+
+# 初始化管理員帳號
+def initialize_admin_user():
+    # 確保在 Flask 應用上下文中運行
+    with app.app_context():
+        # 檢查是否已經有 'emily' 帳號
+        admin_user = User.query.filter_by(username='emily').first()
+
+        if admin_user:
+            print("Admin user 'emily' already exists.")
+        else:
+            # 創建 'emily' 用戶並設置密碼
+            new_admin_user = User(username='emily', password='emily', is_admin=True)
+
+            # 將管理員用戶加入資料庫
+            db.session.add(new_admin_user)
+            db.session.commit()
+            print("Admin user 'emily' created successfully.")
+
+# 路由設定
 @app.route('/')
 def index():
     return render_template('index.html', username=session.get('username'))
@@ -34,6 +67,7 @@ def login():
     user = User.query.filter_by(username=data['username'], password=data['password']).first()
     if user:
         session['username'] = user.username
+        session['is_admin'] = user.is_admin
         return jsonify({'message': 'Login successful'})
     return jsonify({'error': 'Invalid credentials'}), 401
 
@@ -90,7 +124,26 @@ def delete_note(note_id):
         return jsonify({'message': 'Note deleted'})
     return jsonify({'error': 'Not found or not authorized'}), 404
 
+@app.route('/admin/reset', methods=['DELETE'])
+def reset_all():
+    # 檢查當前用戶是否為管理員
+    if session.get('username') != 'emily' or not session.get('is_admin'):
+        return jsonify({'error': '只有管理員（emily）可以執行此操作'}), 403
+
+    # 清除所有備註
+    Note.query.delete()
+    
+    # 保留管理員帳號，刪除所有其他用戶資料
+    User.query.filter(User.username != 'emily').delete()  # 刪除所有使用者資料，保留 'emily'
+    
+    db.session.commit()
+    
+    return jsonify({'message': '已重置所有備註與使用者（保留管理員 emily）'})
+
+# 在應用啟動時初始化管理員
+with app.app_context():
+    db.create_all()  # 創建資料表
+    initialize_admin_user()  # 初始化管理員用戶
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
