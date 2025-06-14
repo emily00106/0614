@@ -7,14 +7,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+
+    <!-- 背景遮罩 -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+
     <!-- 右上角登入註冊按鈕 -->
     <div class="auth-buttons">
         {% if username %}
             <span id="currentUserDisplay">已登入：{{ username }}</span>
             <button id="logoutButton" onclick="logout()">登出</button>
         {% else %}
+            <!-- 登入按鈕，點擊後顯示登入懸浮視窗 -->
             <button id="loginButton" onclick="showLoginForm()">登入</button>
-            <button id="registerButton" onclick="showRegisterForm()">註冊</button>
+            <!-- 註冊按鈕，點擊後跳轉到註冊頁面 -->
+            <a href="/register">
+                <button id="registerButton">註冊</button>
+            </a>
         {% endif %}
     </div>
 
@@ -29,19 +37,6 @@
         </div>
         <button class="enter" onclick="login()">登入</button>
         <button class="enter" onclick="closeLoginForm()">取消</button>
-    </div>
-
-    <!-- 註冊表單 -->
-    <div id="registerForm" class="auth-form" style="display: none;">
-        <h3>註冊</h3>
-        <div class="inputBox">
-            <input type="text" id="registerUsername" placeholder="帳號" required>
-        </div>
-        <div class="inputBox">
-            <input type="password" id="registerPassword" placeholder="密碼" required>
-        </div>
-        <button class="enter" onclick="register()">註冊</button>
-        <button class="enter" onclick="closeRegisterForm()">取消</button>
     </div>
 
     <!-- 主內容 -->
