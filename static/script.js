@@ -207,6 +207,19 @@ function logout() {
         .then(() => window.location.reload());
 }
 
+function resetAll() {
+    if (!confirm("⚠️ 確定要刪除所有使用者與備註？這個操作無法還原！")) return;
+
+    fetch('/admin/reset', { method: 'DELETE' })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message || '已重置');
+            window.location.reload();
+        })
+        .catch(() => alert('操作失敗'));
+}
+
+
 // ===================== 初始化 ===================== //
 function loadNotes() {
     fetch('/notes')
