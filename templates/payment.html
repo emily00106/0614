@@ -6,16 +6,17 @@
     <title>Payment</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
+<body id="payment-page">
 
     <h2>付款頁面</h2>
 
     <p>現在時間: <span id="current-time"></span></p>
     
     <div id="payment-form">
+       
         <label for="amount">金額:</label>
         <input type="number" id="amount" placeholder="不能為0" required>
-
+        
         <p>付款地點: 702第三排我的位置</p>
 
         <button id="payment-button">我會記得付款</button>
