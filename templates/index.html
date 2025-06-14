@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- 右上角登入註冊按鈕 -->
+    <div class="auth-buttons">
+        {% if username %}
+            <span id="currentUserDisplay">已登入：{{ username }}</span>
+            <button id="logoutButton" onclick="logout()">登出</button>
+        {% else %}
+            <button id="loginButton" onclick="showLoginForm()">登入</button>
+            <button id="registerButton" onclick="showRegisterForm()">註冊</button>
+        {% endif %}
+    </div>
+
+    <!-- 登入表單 -->
+    <div id="loginForm" class="auth-form" style="display: none;">
+        <h3>登入</h3>
+        <div class="inputBox">
+            <input type="text" id="loginUsername" placeholder="USERNAME" required>
+        </div>
+        <div class="inputBox">
+            <input type="password" id="loginPassword" placeholder="PASSWORD" required>
+        </div>
+        <button class="enter" onclick="login()">登入</button>
+        <button class="enter" onclick="closeLoginForm()">取消</button>
+    </div>
+
+    <!-- 註冊表單 -->
+    <div id="registerForm" class="auth-form" style="display: none;">
+        <h3>註冊</h3>
+        <div class="inputBox">
+            <input type="text" id="registerUsername" placeholder="帳號" required>
+        </div>
+        <div class="inputBox">
+            <input type="password" id="registerPassword" placeholder="密碼" required>
+        </div>
+        <button class="enter" onclick="register()">註冊</button>
+        <button class="enter" onclick="closeRegisterForm()">取消</button>
+    </div>
+
+    <!-- 主內容 -->
+    <div class="main-container" style="display: flex; gap: 20px; padding: 20px;">
+        <!-- 日曆區 -->
+        <div class="calendar">
+            <div class="calendar-header">
+                <button class="btn-month prev" onclick="changeMonth(-1)">‹</button>
+                <h2 id="monthTitle"></h2>
+                <button class="btn-month next" onclick="changeMonth(1)">›</button>
+            </div>
+
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody"></tbody>
+            </table>
+
+            <div class="calendar-footer">
+                <button onclick="resetNotes()">重置所有備註</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 備註輸入欄 -->
+    <div class="note-input" id="noteInput">
+        <button id="toggleNoteBtn" style="width: 100%; margin-bottom: 10px;">收起備註</button>
+        <h3>記點什麼 σ(o'ω'o):</h3>
+        <textarea id="noteText" placeholder="輸入文字..."></textarea>
+        <div class="note-input-buttons">
+            <button onclick="saveNote()">儲存</button>
+            <button onclick="cancelEdit()">取消</button>
+        </div>
+        <div id="existingNotes"></div>
+    </div>
+
+    <hr class="separator">
+
+    <script>
+        const currentUser = {{ '"' + username + '"' if username else 'null' }};
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
