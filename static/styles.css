@@ -300,6 +300,26 @@ body {
     color: white;
 }
 
+/* ------------payment------------- */
+/* 針對 h2 付款頁面 和 p 時間 */
+#payment-page h2, #payment-page p {
+    text-align: center; /* 文字置中 */
+    margin: 10;  /* 上下邊距 */
+}
+
+#payment-page h2 {
+    margin-bottom: 20px;  /* 設定標題下方的間距 */
+}
+
+#payment-page p {
+    margin-top: 20px; /* 設定時間文字的上方間距 */
+}
+
+/* 淺藍色背景 */
+#payment-page{
+    background-color: #f4f7fc; 
+}
+
 /* 付款完顯示懸浮視窗 */
 /* 背景遮罩 */
 .modal-overlay {
@@ -313,7 +333,7 @@ body {
     z-index: 9998;
 }
 
-/* 註冊成功的懸浮視窗 */
+/* 付款成功的懸浮視窗 */
 .modal {
     display: none;
     position: fixed;
@@ -329,17 +349,33 @@ body {
     text-align: center;
 }
 
-
+/* 讓表單居中並設置最大寬度 */
 #payment-form {
     margin-top: 20px;
+    width: 100%;
+    max-width: 400px;  /* 設定最大寬度 */
+    margin-left: auto;
+    margin-right: auto;  /* 水平居中 */
 }
 
+/* 調整輸入框的樣式 */
 #payment-form input {
-    width: 100%;
+    width: 100%;       /* 保持寬度為100% */
+    max-width: 380px;  /* 限制最大寬度 */
     padding: 8px;
     margin-bottom: 10px;
+    border-radius: 6px;   /* 圓角 */
+    border: 1px solid #ccc;    /* 邊框，寬度為 1px */
 }
 
+/* 隱藏數字選擇器 */
+#payment-form input[type="number"]::-webkit-outer-spin-button,
+#payment-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* 調整按鈕的樣式 */
 #payment-form button {
     width: 100%;
     padding: 8px;
@@ -347,10 +383,73 @@ body {
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 6px;   /* 圓角 */
 }
 
-/* 讓背景變暗 */
-.modal-overlay, .modal {
-    display: none;
+#payment-form button:hover {
+    background-color: #218838;  /* 按鈕懸停時的顏色 */
 }
 
+/* ------------Register------------- */
+/* 註冊表單容器 */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* 使所有元素水平置中 */
+    justify-content: center;  /* 使表單垂直置中 */
+    width: 100%;
+    max-width: 400px;  /* 限制表單的最大寬度 */
+    margin: 50px auto;  /* 使容器居中，並給予上下間距 */
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* register.css */
+#register-page{
+    background-color: #f4f7fc;
+}
+
+#register-page button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 8px;
+    background-color: #4b9ef3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;   /* 圓角 */
+}
+
+#register-page h2 {
+    text-align: center;
+    color: #333;
+}
+
+#register-page form {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 400px;  /* 設定最大寬度 */
+    margin-left: auto;
+    margin-right: auto;  /* 水平居中 */
+}
+
+#register-page input[type="text"],
+#register-page input[type="password"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+#register-page input[type="text"]:focus,
+#register-page input[type="password"]:focus {
+    outline: none;
+    border-color: #4b9ef3;
+    box-shadow: 0 0 8px rgba(75, 158, 243, 0.3);
+}
