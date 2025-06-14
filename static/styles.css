@@ -299,3 +299,58 @@ body {
     background-color: #000;
     color: white;
 }
+
+/* 付款完顯示懸浮視窗 */
+/* 背景遮罩 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+}
+
+/* 註冊成功的懸浮視窗 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    width: 300px;
+    text-align: center;
+}
+
+
+#payment-form {
+    margin-top: 20px;
+}
+
+#payment-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+#payment-form button {
+    width: 100%;
+    padding: 8px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* 讓背景變暗 */
+.modal-overlay, .modal {
+    display: none;
+}
+
