@@ -3,6 +3,38 @@ let currentDate = new Date();
 let selectedDate = null;
 let notes = {}; // 從伺服器載入
 
+// ===================== 初始化 ===================== //
+function loadNotes() {
+    fetch('/notes')
+        .then(res => res.json())
+        .then(data => {
+            notes = data;
+            renderCalendar();
+            if (selectedDate) showCurrentNotes();
+        });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 等待所有內容加載完成後再執行
+    renderCalendar();  // 先渲染行事曆
+    loadNotes();  // 然後載入備註資料
+
+    // 控制備註顯示/隱藏的功能
+    const toggleBtn = document.getElementById('toggleNoteBtn');
+    const noteInput = document.getElementById('noteInput');
+    toggleBtn.addEventListener('click', () => {
+        if (noteInput.classList.contains('open')) {
+            noteInput.classList.remove('open');
+            toggleBtn.textContent = '展開備註';
+        } else {
+            noteInput.classList.add('open');
+            toggleBtn.textContent = '收起備註';
+        }
+    });
+    loadNotes();
+});
+
+
 // ===================== 日曆渲染 ===================== //
 function renderCalendar() {
     const monthTitle = document.getElementById('monthTitle');
@@ -154,6 +186,51 @@ function deleteNote(noteId) {
 }
 
 
+// ===================== 付款功能 ===================== //
+// 顯示當前時間（年月日時分秒）
+function displayCurrentTime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const currentTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    document.getElementById('current-time').textContent = currentTime;
+}
+
+// 每秒更新一次時間
+setInterval(displayCurrentTime, 1000);
+
+// 當付款按鈕被點擊時
+document.getElementById('payment-button').addEventListener('click', function() {
+    const amount = document.getElementById('amount').value;
+
+    // 檢查金額是否為 0 或空
+    if (amount === '' || parseFloat(amount) === 0) {
+        alert('金額不能為0');
+        return;
+    }
+
+    // 顯示懸浮視窗
+    document.getElementById('success-modal').style.display = 'block';
+    document.getElementById('modal-overlay').style.display = 'block';
+
+    // 等待幾秒鐘後跳轉到首頁
+    setTimeout(function() {
+        window.location.href = "/";  // 跳轉到首頁
+    }, 2000);
+});
+
+// 點擊背景時隱藏懸浮視窗
+document.getElementById('modal-overlay').addEventListener('click', function() {
+    document.getElementById('success-modal').style.display = 'none';
+    document.getElementById('modal-overlay').style.display = 'none';
+});
+
+
+
 // ===================== 登入註冊 ===================== //
 function showLoginForm() {
     document.getElementById('loginForm').style.display = 'block';
@@ -220,28 +297,4 @@ function resetAll() {
 }
 
 
-// ===================== 初始化 ===================== //
-function loadNotes() {
-    fetch('/notes')
-        .then(res => res.json())
-        .then(data => {
-            notes = data;
-            renderCalendar();
-            if (selectedDate) showCurrentNotes();
-        });
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleBtn = document.getElementById('toggleNoteBtn');
-    const noteInput = document.getElementById('noteInput');
-    toggleBtn.addEventListener('click', () => {
-        if (noteInput.classList.contains('open')) {
-            noteInput.classList.remove('open');
-            toggleBtn.textContent = '展開備註';
-        } else {
-            noteInput.classList.add('open');
-            toggleBtn.textContent = '收起備註';
-        }
-    });
-    loadNotes();
-});
