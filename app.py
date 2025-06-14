@@ -51,15 +51,46 @@ def initialize_admin_user():
 def index():
     return render_template('index.html', username=session.get('username'))
 
-@app.route('/register', methods=['POST'])
+# @app.route('/register', methods=['POST'])
+# def register():
+#     data = request.get_json()
+#     if User.query.filter_by(username=data['username']).first():
+#         return jsonify({'error': 'Username exists'}), 400
+#     user = User(username=data['username'], password=data['password'])
+#     db.session.add(user)
+#     db.session.commit()
+#     return jsonify({'message': 'Registered successfully'})
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    data = request.get_json()
-    if User.query.filter_by(username=data['username']).first():
-        return jsonify({'error': 'Username exists'}), 400
-    user = User(username=data['username'], password=data['password'])
-    db.session.add(user)
-    db.session.commit()
-    return jsonify({'message': 'Registered successfully'})
+    if request.method == 'POST':
+        # 確保是從表單提交的資料
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # 確保用戶名和密碼不為空
+        if not username or not password:
+            return render_template('register.html', error="Username and password cannot be empty")
+
+        # 檢查用戶名是否已存在
+        if User.query.filter_by(username=username).first():
+            return render_template('register.html', error="Username already exists")
+        
+        # 創建新用戶
+        user = User(username=username, password=password)
+        try:
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('payment'))  # 註冊成功後跳轉到付款頁面
+        except Exception as e:
+            db.session.rollback()
+            return render_template('register.html', error=f"Error registering user: {e}")
+
+    return render_template('register.html')
+
+@app.route('/payment')
+def payment():
+    return render_template('payment.html')
 
 @app.route('/login', methods=['POST'])
 def login():
