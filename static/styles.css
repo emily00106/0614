@@ -49,6 +49,7 @@ body {
 /* 日曆表格 */
 .calendar-table {
     width: 100%;
+    max-height: 60px;
     border-collapse: collapse;
     table-layout: fixed;
 }
@@ -56,6 +57,7 @@ body {
 .calendar-table td, .calendar-table th {
     width: 40px;
     height: 60px;
+    max-height: 60px;
     padding: 10px;
     text-align: center;
     vertical-align: top;
@@ -81,6 +83,12 @@ body {
     border-radius: 50%;
     font-weight: bold;
     color: #333;
+}
+
+.note-text{
+    max-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 右側備註欄 */

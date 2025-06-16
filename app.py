@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from models import db, User, Note  # 從 models.py 引入資料庫和模型
 import os
 
 # 初始化 Flask 應用和資料庫
@@ -12,21 +14,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'ca
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 初始化資料庫
-db = SQLAlchemy(app)
+db.init_app(app)  # 確保將 app 與 db 綁定
 
-# 用戶和備註模型
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
-    notes = db.relationship('Note', backref='user', lazy=True)
+# 設定上傳檔案的儲存路徑
+UPLOAD_FOLDER = 'static/images'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
-class Note(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.String(50), nullable=False)
-    text = db.Column(db.String(255), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+# 檢查檔案格式是否允許
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 # 初始化管理員帳號
 def initialize_admin_user():
@@ -45,16 +42,6 @@ def initialize_admin_user():
             db.session.add(new_admin_user)
             db.session.commit()
             print("Admin user 'emily' created successfully.")
-
-
-# 設定上傳檔案的儲存路徑
-UPLOAD_FOLDER = 'static/images'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
-
-# 檢查檔案格式是否允許
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 # 路由設定
 @app.route('/')
@@ -112,10 +99,11 @@ def login():
         return jsonify({'message': 'Login successful'})
     return jsonify({'error': 'Invalid credentials'}), 401
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
+    session.pop('username', None)  # 清除 username
+    session.pop('is_admin', None)  # 清除 admin 權限
+    return redirect(url_for('index'))  # 跳轉回首頁
 
 @app.route('/notes', methods=['GET'])
 def get_notes():
@@ -126,7 +114,8 @@ def get_notes():
     all_notes = Note.query.filter_by(user_id=user.id if user else None).all()
     note_dict = {}
     for note in all_notes:
-        note_dict.setdefault(note.date, []).append({'id': note.id, 'text': note.text})
+        note_dict.setdefault(note.date, []).append({'id': note.id, 'text': note.text, 'image_url': note.image_url})
+    
     return jsonify(note_dict)
 
 @app.route('/notes', methods=['POST'])
@@ -184,17 +173,47 @@ def reset_all():
 # 路由處理圖片上傳
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    # 確保用戶已登入
+    if 'username' not in session:
+        return redirect(url_for('login'))  # 未登入，跳轉到登入頁面
+
+    # 檢查是否有檔案
     if 'file' not in request.files:
         return redirect(request.url)
+
     file = request.files['file']
-    
+
+    # 檢查檔案格式是否允許
     if file and allowed_file(file.filename):
-        # 取得檔案名稱
         filename = file.filename
-        # 儲存圖片
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return render_template('index.html', filename=filename)
-    
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)    # 儲存圖片
+
+        # 設置圖片的 URL
+        image_url = url_for('static', filename='images/' + filename)
+
+        # 儲存圖片的資料到資料庫
+        user_id = session.get('user_id')  # 取得登入的使用者 ID
+        date = datetime.utcnow().strftime('%Y-%m-%d')  # 獲取當前日期
+        text = request.form.get('noteText', '')  # 可選，備註文字
+
+        # 新增一筆新的備註資料（包含圖片 URL）
+        new_note = Note(
+            user_id=user_id,
+            date=date,
+            text=text,
+            image_url=image_url
+        )
+
+        db.session.add(new_note)
+        db.session.commit()
+
+        # 上傳圖片成功，返回相同頁面
+        return render_template('index.html', image_url=image_url, username=session.get('username'))
+        # return redirect(url_for('index'))  # 重新導向回首頁，顯示圖片
+
+
+    # 如果檔案格式不符合，重定向回原頁面
     return redirect(request.url)
 
 # 在應用啟動時初始化管理員

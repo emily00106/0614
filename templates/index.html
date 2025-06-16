@@ -15,7 +15,9 @@
     <div class="auth-buttons">
         {% if username %}
             <span id="currentUserDisplay">已登入：{{ username }}</span>
-            <button id="logoutButton" onclick="logout()">登出</button>
+            <a href="{{ url_for('logout') }}">
+                <button id="logoutButton">登出</button>
+            </a>
         {% else %}
             <!-- 登入按鈕，點擊後顯示登入懸浮視窗 -->
             <button id="loginButton" onclick="showLoginForm()">登入</button>
@@ -40,7 +42,6 @@
             <button class="enter" onclick="closeLoginForm()">取消</button>
         </div>
     </div>
-
 
     <!-- 主內容 -->
     <div class="main-container" style="display: flex; gap: 20px; padding: 20px;">
@@ -85,26 +86,39 @@
             <button onclick="cancelEdit()">取消</button>
         </div>
 
-        <!-- 改正 -->
-        <form action="/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" accept="image/*">
-            <input type="submit" value="上傳">
-        </form>
-
-        {% if filename %}
-            <!-- 顯示上傳的圖片 -->
-            <h2>已上傳的圖片：</h2>
-            <img src="{{ url_for('static', filename='images/' + filename) }}" alt="Uploaded Image" width="300">
+        <!-- 圖片上傳區 -->
+        {% if username %}
+            <div>
+                <h4>新增圖片：</h4>
+                <form action="/upload" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="file" accept="image/*">
+                    <input type="submit" value="上傳圖片">
+                </form>
+            </div>
         {% endif %}
 
-        <!-- 改正結束 -->
+        {% if image_url %}
+            <!-- 顯示上傳的圖片 -->
+            <h2>已上傳的圖片：</h2>
+            <img src="{{ image_url }}" alt="Uploaded Image" width="300">
+        {% endif %}
+
+        <!-- 顯示從資料庫取得的圖片 -->
+        {% for note in notes %}
+            {% if note.image_url %}
+                <img src="{{ note.image_url }}" alt="Note Image" width="300">
+            {% endif %}
+        {% endfor %}
+
+
+
         <div id="existingNotes"></div>
     </div>
 
     <hr class="separator">
 
     <script>
-        // const currentUser = {{ ('"' + username + '"') if username else 'null' }};
+        // const currentUser = {{ ('"' + username + '"') if username else 'null' }};  // If needed for JS logic
     </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
