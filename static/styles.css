@@ -170,7 +170,7 @@ body {
     background-color: #c0392b;
 }
 
-/* 右上角登入註冊按鈕 */
+/* -----------------------------右上角2顆登入註冊按鈕----------------------------- */
 .auth-buttons button {
     padding: 10px 20px;
     margin-left: 5px;
@@ -193,32 +193,71 @@ body {
 
 /* 註冊按鈕 */
 .auth-buttons button#registerButton {
-    background-color: #2ecc71;
+    background-color: #1f864a;
     color: white;
 }
 
 .auth-buttons button#registerButton:hover {
-    background-color: #27ae60;
+    background-color: #0e3f23;
 }
 
-/* 彈跳註冊表單 */
-.auth-form {
+/* ---------------------------------------登入表單--------------------------------------- */
+/* 登入頁面背景遮罩 */
+#login-page {
+    display: none; /* 默認隱藏，當登入表單顯示時改為 block */
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    background: #e3e3e3;
-    box-shadow: 16px 16px 32px #c8c8c8, -16px -16px 32px #fefefe;
-    border-radius: 8px;
-    padding: 30px 20px;
-    text-align: center;
-    display: none;
-    z-index: 1001;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 半透明的黑色背景 */
+    z-index: 1001; /* 讓登入表單覆蓋在其他元素之上 */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 垂直居中 */
 }
 
-/* 註冊表單的標題 */
-.auth-form h3 {
+/* 聚焦輸入框樣式 */
+#login-page .inputBox input:focus ~ span,
+#login-page .inputBox input:valid ~ span {
+    transform: translateX(110px) translateY(-20px); /* 調整為合適的移動位置 */
+    font-size: 0.8em;
+    padding: 5px 10px;
+    background: #000;
+    color: white;
+    letter-spacing: 0.2em;
+}
+
+/* 輸入框聚焦或有效時的樣式 */
+#login-page .inputBox input:focus,
+#login-page .inputBox input:valid {
+    border: 2px solid #000;  /* 輸入框邊框變成黑色 */
+    border-radius: 8px;
+    background-color: transparent;  /* 讓背景保持透明 */
+}
+
+/* 提示文字 (span) 初始樣式 */
+#login-page .inputBox span {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 12px;
+    color: #000;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+/* 登入表單 */
+.form-container {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.form-container h3 {
     font-size: x-large;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -228,13 +267,13 @@ body {
 }
 
 /* 表單輸入框 */
-.auth-form .inputBox {
+.inputBox {
     position: relative;
     width: 250px;
     margin: 0 auto 20px;
 }
 
-.auth-form .inputBox input {
+.inputBox input {
     width: 100%;
     padding: 10px;
     outline: none;
@@ -248,40 +287,8 @@ body {
     border-bottom-left-radius: 8px;
 }
 
-/* 表單的提示文字 */
-.auth-form .inputBox span {
-    position: absolute;
-    top: 0;
-    left: 10px;
-    padding: 10px 5px;
-    font-size: 12px;
-    color: #000;
-    text-transform: uppercase;
-    pointer-events: none;
-    transition: 0.4s;
-    letter-spacing: 3px;
-    border-radius: 8px;
-}
-
-/* 聚焦輸入框樣式 */
-.auth-form .inputBox input:focus ~ span,
-.auth-form .inputBox input:valid ~ span {
-    transform: translateX(113px) translateY(-15px);
-    font-size: 0.8em;
-    padding: 5px 10px;
-    background: #000;
-    color: white;
-    letter-spacing: 0.2em;
-}
-
-.auth-form .inputBox input:focus,
-.auth-form .inputBox input:valid {
-    border: 2px solid #000;
-    border-radius: 8px;
-}
-
-/* 註冊/登入按鈕 */
-.auth-form .enter {
+/* 按鈕 */
+.enter {
     height: 45px;
     width: 100px;
     border-radius: 5px;
@@ -295,12 +302,12 @@ body {
     margin: 10px auto 0;
 }
 
-.auth-form .enter:hover {
+.enter:hover {
     background-color: #000;
-    color: white;
+    color: white;;
 }
 
-/* ------------payment------------- */
+/* --------------------------payment-------------------------------------------- */
 /* 針對 h2 付款頁面 和 p 時間 */
 #payment-page h2, #payment-page p {
     text-align: center; /* 文字置中 */
@@ -390,7 +397,7 @@ body {
     background-color: #218838;  /* 按鈕懸停時的顏色 */
 }
 
-/* ------------Register------------- */
+/* ---------------------------------Register-------------------------------- */
 /* 註冊表單容器 */
 .form-container {
     display: flex;
@@ -453,3 +460,4 @@ body {
     border-color: #4b9ef3;
     box-shadow: 0 0 8px rgba(75, 158, 243, 0.3);
 }
+

@@ -27,17 +27,20 @@
     </div>
 
     <!-- 登入表單 -->
-    <div id="loginForm" class="auth-form" style="display: none;">
-        <h3>登入</h3>
-        <div class="inputBox">
-            <input type="text" id="loginUsername" placeholder="USERNAME" required>
+    <div id="login-page" style="display: none;">
+        <div class="form-container">
+            <h3>登入</h3>
+            <div class="inputBox">
+                <input type="text" id="loginUsername" placeholder="USERNAME" required>
+            </div>
+            <div class="inputBox">
+                <input type="password" id="loginPassword" placeholder="PASSWORD" required>
+            </div>
+            <button class="enter" onclick="login()">登入</button>
+            <button class="enter" onclick="closeLoginForm()">取消</button>
         </div>
-        <div class="inputBox">
-            <input type="password" id="loginPassword" placeholder="PASSWORD" required>
-        </div>
-        <button class="enter" onclick="login()">登入</button>
-        <button class="enter" onclick="closeLoginForm()">取消</button>
     </div>
+
 
     <!-- 主內容 -->
     <div class="main-container" style="display: flex; gap: 20px; padding: 20px;">
@@ -87,7 +90,7 @@
     <hr class="separator">
 
     <script>
-        const currentUser = {{ '"' + username + '"' if username else 'null' }};
+        // const currentUser = {{ '"' + username + '"' ? username : 'null' }};
     </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+
 // ===================== 日曆渲染 ===================== //
 function renderCalendar() {
     const monthTitle = document.getElementById('monthTitle');
@@ -231,19 +233,34 @@ document.getElementById('modal-overlay').addEventListener('click', function() {
 
 
 
+
+
+
 // ===================== 登入註冊 ===================== //
+// 顯示登入表單和背景遮罩
 function showLoginForm() {
+    // 顯示背景遮罩
+    document.getElementById('login-page').style.display = 'flex';
+
+    // 顯示登入表單
     document.getElementById('loginForm').style.display = 'block';
 }
+
+// 關閉登入表單和背景遮罩
 function closeLoginForm() {
+    // 隱藏背景遮罩
+    document.getElementById('login-page').style.display = 'none';
+
+    // 隱藏登入表單
     document.getElementById('loginForm').style.display = 'none';
 }
-function showRegisterForm() {
-    document.getElementById('registerForm').style.display = 'block';
-}
-function closeRegisterForm() {
-    document.getElementById('registerForm').style.display = 'none';
-}
+
+// function showRegisterForm() {
+//     document.getElementById('registerForm').style.display = 'block';
+// }
+// function closeRegisterForm() {
+//     document.getElementById('registerForm').style.display = 'none';
+// }
 
 function register() {
     const username = document.getElementById('registerUsername').value.trim();
@@ -265,19 +282,29 @@ function register() {
 function login() {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
+
+    // 發送登入請求
     fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
-    }).then(res => res.json())
-      .then(data => {
-          if (data.error) alert(data.error);
-          else {
-              alert('登入成功');
-              window.location.reload();
-          }
-      });
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) 
+            alert(data.error);
+        else{
+            // 登入成功
+            alert('登入成功');
+
+            // 刷新頁面後應用儲存的顏色
+            window.location.reload();  // 強制重新載入，確保顏色選擇區顯示
+        }
+    });
 }
+
+
+
 
 function logout() {
     fetch('/logout')
@@ -295,6 +322,8 @@ function resetAll() {
         })
         .catch(() => alert('操作失敗'));
 }
+
+
 
 
 
