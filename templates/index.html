@@ -84,13 +84,27 @@
             <button onclick="saveNote()">儲存</button>
             <button onclick="cancelEdit()">取消</button>
         </div>
+
+        <!-- 改正 -->
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*">
+            <input type="submit" value="上傳">
+        </form>
+
+        {% if filename %}
+            <!-- 顯示上傳的圖片 -->
+            <h2>已上傳的圖片：</h2>
+            <img src="{{ url_for('static', filename='images/' + filename) }}" alt="Uploaded Image" width="300">
+        {% endif %}
+
+        <!-- 改正結束 -->
         <div id="existingNotes"></div>
     </div>
 
     <hr class="separator">
 
     <script>
-        // const currentUser = {{ '"' + username + '"' ? username : 'null' }};
+        // const currentUser = {{ ('"' + username + '"') if username else 'null' }};
     </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

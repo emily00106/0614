@@ -46,6 +46,16 @@ def initialize_admin_user():
             db.session.commit()
             print("Admin user 'emily' created successfully.")
 
+
+# 設定上傳檔案的儲存路徑
+UPLOAD_FOLDER = 'static/images'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+
+# 檢查檔案格式是否允許
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
 # 路由設定
 @app.route('/')
 def index():
@@ -170,6 +180,22 @@ def reset_all():
     db.session.commit()
     
     return jsonify({'message': '已重置所有備註與使用者（保留管理員 emily）'})
+
+# 路由處理圖片上傳
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return redirect(request.url)
+    file = request.files['file']
+    
+    if file and allowed_file(file.filename):
+        # 取得檔案名稱
+        filename = file.filename
+        # 儲存圖片
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return render_template('index.html', filename=filename)
+    
+    return redirect(request.url)
 
 # 在應用啟動時初始化管理員
 with app.app_context():
