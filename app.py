@@ -1,9 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-<<<<<<< HEAD
 from datetime import datetime
-=======
->>>>>>> 314e199183c10cd909bc602c74983d4ce6909c97
 from models import db, User, Note  # 從 models.py 引入資料庫和模型
 import os
 
@@ -107,10 +104,6 @@ def logout():
     session.pop('username', None)  # 清除 username
     session.pop('is_admin', None)  # 清除 admin 權限
     return redirect(url_for('index'))  # 跳轉回首頁
-<<<<<<< HEAD
-=======
-
->>>>>>> 314e199183c10cd909bc602c74983d4ce6909c97
 
 @app.route('/notes', methods=['GET'])
 def get_notes():
@@ -212,7 +205,6 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)    # 儲存圖片
 
-<<<<<<< HEAD
         # 設置圖片的 URL
         image_url = url_for('static', filename='images/' + filename)
 
@@ -236,13 +228,6 @@ def upload_file():
         return render_template('index.html', image_url=image_url, username=session.get('username'))
         # return redirect(url_for('index'))  # 重新導向回首頁，顯示圖片
 
-=======
-        # 回傳圖片的 URL
-        image_url = url_for('static', filename='images/' + filename)
-        
-        # 上傳圖片成功，返回相同頁面，並傳遞圖片 URL 和用戶名稱
-        return render_template('index.html', image_url=image_url, username=session.get('username'))
->>>>>>> 314e199183c10cd909bc602c74983d4ce6909c97
 
     # 如果檔案格式不符合，重定向回原頁面
     return redirect(request.url)

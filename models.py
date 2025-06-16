@@ -27,7 +27,4 @@ class Note(db.Model):
 
     def __repr__(self):
         return f'<Note {self.date} - {self.text[:10]}>'
-<<<<<<< HEAD
     
-=======
->>>>>>> 314e199183c10cd909bc602c74983d4ce6909c97

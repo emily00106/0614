@@ -1,1 +1,3 @@
-calendar.db
+*.db
+*.pyc
+__pycache__
