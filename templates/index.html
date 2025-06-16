@@ -79,17 +79,10 @@
     <!-- 備註輸入欄 -->
     <div class="note-input" id="noteInput">
         <button id="toggleNoteBtn" style="width: 100%; margin-bottom: 10px;">收起備註</button>
-        <h3>記點什麼 σ(o'ω'o):</h3>
-        <textarea id="noteText" placeholder="輸入文字..."></textarea>
-        <div class="note-input-buttons">
-            <button onclick="saveNote()">儲存</button>
-            <button onclick="cancelEdit()">取消</button>
-        </div>
 
-        <!-- 圖片上傳區 -->
         {% if username %}
             <div>
-                <h4>新增圖片：</h4>
+                <h3>本次登入你想放甚麼圖片：</h3>
                 <form action="/upload" method="POST" enctype="multipart/form-data">
                     <input type="file" name="file" accept="image/*">
                     <input type="submit" value="上傳圖片">
@@ -99,23 +92,22 @@
 
         {% if image_url %}
             <!-- 顯示上傳的圖片 -->
-            <h2>已上傳的圖片：</h2>
             <img src="{{ image_url }}" alt="Uploaded Image" width="300">
         {% endif %}
 
-        <!-- 顯示從資料庫取得的圖片 -->
-        {% for note in notes %}
-            {% if note.image_url %}
-                <img src="{{ note.image_url }}" alt="Note Image" width="300">
-            {% endif %}
-        {% endfor %}
+        <hr class="separator">
 
+        <h3>記點什麼 σ(o'ω'o):</h3>
+        <textarea id="noteText" placeholder="輸入文字..."></textarea>
+        <div class="note-input-buttons">
+            <button onclick="saveNote()">儲存</button>
+            <button onclick="cancelEdit()">取消</button>
+        </div>
 
+        <hr class="separator">
 
         <div id="existingNotes"></div>
     </div>
-
-    <hr class="separator">
 
     <script>
         // const currentUser = {{ ('"' + username + '"') if username else 'null' }};  // If needed for JS logic
