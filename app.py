@@ -47,17 +47,7 @@ def initialize_admin_user():
 @app.route('/')
 def index():
     return render_template('index.html', username=session.get('username'))
-
-# @app.route('/register', methods=['POST'])
-# def register():
-#     data = request.get_json()
-#     if User.query.filter_by(username=data['username']).first():
-#         return jsonify({'error': 'Username exists'}), 400
-#     user = User(username=data['username'], password=data['password'])
-#     db.session.add(user)
-#     db.session.commit()
-#     return jsonify({'message': 'Registered successfully'})
-
+    
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -169,22 +159,6 @@ def reset_all():
     db.session.commit()
     
     return jsonify({'message': '已重置所有備註與使用者（保留管理員 emily）'})
-
-# # 路由處理圖片上傳
-# @app.route('/upload', methods=['POST'])
-# def upload_file():
-#     if 'file' not in request.files:
-#         return redirect(request.url)
-#     file = request.files['file']
-    
-#     if file and allowed_file(file.filename):
-#         # 取得檔案名稱
-#         filename = file.filename
-#         # 儲存圖片
-#         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#         return render_template('index.html', filename=filename)
-    
-#     return redirect(request.url)
 
 # 路由處理圖片上傳
 @app.route('/upload', methods=['POST'])
